@@ -10,7 +10,7 @@ allow update_engine system_app:binder { call };
 allow update_engine system_file:file execute_no_trans;
 allow update_engine labeledfs:filesystem mount;
 allow update_engine otadexopt_service:service_manager find;
-allow update_engine otapreopt_chroot_exec:file { execute execute_no_trans getattr open read };
+#allow update_engine otapreopt_chroot_exec:file { execute execute_no_trans getattr open read };
 allow update_engine postinstall_file:dir mounton;
 allow update_engine self:capability sys_chroot;
 allow update_engine system_server:binder call;

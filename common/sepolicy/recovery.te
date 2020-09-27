@@ -116,7 +116,7 @@ allow recovery logpersistd_logging_prop:file { getattr open };
 allow recovery lowpan_prop:file { getattr open };
 allow recovery mmc_prop:file { getattr open };
 allow recovery self:capability fsetid;
-allow recovery net_dns_prop:file { getattr open };
+#allow recovery net_dns_prop:file { getattr open };
 allow recovery overlay_prop:file { getattr open };
 allow recovery persistent_properties_ready_prop:file { getattr open };
 allow recovery safemode_prop:file { getattr open };

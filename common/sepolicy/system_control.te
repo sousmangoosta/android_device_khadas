@@ -65,8 +65,8 @@ get_prop(system_control, boottime_prop)
 
 set_prop(system_control, overlay_prop)
 get_prop(system_control, overlay_prop)
-set_prop(system_control, net_dns_prop)
-get_prop(system_control, net_dns_prop)
+#set_prop(system_control, net_dns_prop)
+#get_prop(system_control, net_dns_prop)
 set_prop(system_control, logpersistd_logging_prop)
 get_prop(system_control, logpersistd_logging_prop)
 set_prop(system_control, hwservicemanager_prop)
@@ -116,8 +116,8 @@ allow system_control { env_device cri_block_device }:blk_file { getattr read ope
 allow system_control self:capability sys_nice;
 
 allow system_control system_app:binder { call };
-allow system_control droidvold_hwservice:hwservice_manager { find };
-allow system_control droidvold:binder { call };
+#allow system_control droidvold_hwservice:hwservice_manager { find };
+#allow system_control droidvold:binder { call };
 
 
 allow system_control { video_device amvecm_device }:chr_file  { read write open ioctl getattr };
@@ -152,7 +152,7 @@ allow system_control tvserver:binder { call transfer };
 allow system_control tvserver_hwservice:hwservice_manager find;
 allow system_control sysfs_leds:dir search;
 
-allow system_control hal_keymaster_hwservice:hwservice_manager { find };
+#allow system_control hal_keymaster_hwservice:hwservice_manager { find };
 allow system_control hal_keymaster_default:binder { call };
 
 allow system_control sysfs_clock:file { read open };

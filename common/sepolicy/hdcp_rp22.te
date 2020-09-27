@@ -5,7 +5,7 @@ type hdcprp_device, dev_type;
 
 allow hdcp_rp22 hdcprp_device:chr_file { open read write getattr ioctl };
 
-allow hdcp_rp22 system_file:file execute_no_trans;
+#allow hdcp_rp22 system_file:file execute_no_trans;
 allow hdcp_rp22 hdcp_rp22_exec:file {entrypoint read};
 
 #allow hdcp_rp22 shell_exec:file rx_file_perms;

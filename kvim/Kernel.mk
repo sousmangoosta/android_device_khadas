@@ -114,42 +114,46 @@ $(KERNEL_OUT):
 	mkdir -p $(KERNEL_OUT)
 
 $(KERNEL_CONFIG): $(KERNEL_OUT)
-	$(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) $(BUILD_CONFIG)
+	PATH=/bin:$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) $(BUILD_CONFIG)
 
 $(INTERMEDIATES_KERNEL): $(KERNEL_OUT) $(KERNEL_CONFIG) $(INSTALLED_BOARDDTB_TARGET)
 	@echo "make Image"
 #	$(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE)
 ifeq ($(KERNEL_A32_SUPPORT), true)
-	$(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules uImage
+	PATH=/bin:$(abspath bootloader/uboot/build/tools):$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules uImage
 else
-	$(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules Image.gz
+	PATH=/bin:$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules Image.gz
 endif
 #	$(MAKE) -C $(shell pwd)/$(PRODUCT_OUT)/obj/KERNEL_OBJ M=$(shell pwd)/hardware/amlogic/thermal/ ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules
 	#$(gpu-modules)
-	$(MAKE) KERNEL_ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) -f hardware/amlogic/wifi/configs/wifi_driver.mk $(WIFI_MODULE)
-	$(MAKE) KERNEL_ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) -f hardware/amlogic/bluetooth/configs/bluetooth_driver.mk BLUETOOTH_INF=$(BLUETOOTH_INF) $(BLUETOOTH_MODULE)
+	PATH=/bin:$$PATH $(MAKE) KERNEL_ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) -f hardware/amlogic/wifi/configs/wifi_driver.mk $(WIFI_MODULE)
+	PATH=/bin:$$PATH $(MAKE) KERNEL_ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) -f hardware/amlogic/bluetooth/configs/bluetooth_driver.mk BLUETOOTH_INF=$(BLUETOOTH_INF) $(BLUETOOTH_MODULE)
 	$(tb-modules)
 	$(cp-modules)
 	$(media-modules)
 	mkdir -p $(PRODUCT_OUT)/$(TARGET_COPY_OUT_VENDOR)/lib/modules/
 	cp $(KERNEL_KO_OUT)/* $(PRODUCT_OUT)/$(TARGET_COPY_OUT_VENDOR)/lib/modules/
 
+.PHONY: kerneltags
 kerneltags: $(KERNEL_OUT)
-	$(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) tags
+	PATH=/bin:$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) tags
 
+.PHONY: kernelconfig
 kernelconfig: $(KERNEL_OUT) $(KERNEL_CONFIG)
 	env KCONFIG_NOTIMESTAMP=true \
-	     $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) menuconfig
+	     PATH=/bin:$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) menuconfig
 
+.PHONY: savekernelconfig
 savekernelconfig: $(KERNEL_OUT) $(KERNEL_CONFIG)
 	env KCONFIG_NOTIMESTAMP=true \
-	     $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) savedefconfig
+	     PATH=/bin:$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) savedefconfig
 	@echo
 	@echo Saved to $(KERNEL_OUT)/defconfig
 	@echo
 	@echo handly merge to "$(KERNEL_ROOTDIR)/arch/$(KERNEL_ARCH)/configs/$(KERNEL_DEFCONFIG)" if need
 	@echo
 
+.PHONY: build-modules-quick
 build-modules-quick:
 	    $(media-modules)
 
@@ -164,7 +168,7 @@ $(INSTALLED_KERNEL_TARGET): $(INTERMEDIATES_KERNEL) | $(ACP)
 -include device/khadas/common/gpu/mali450-kernel.mk
 
 $(BOARD_VENDOR_KERNEL_MODULES): $(INSTALLED_KERNEL_TARGET)
-	@echo "BOARD_VENDOR_KERNEL_MODULES: $(BOARD_VENDOR_KERNEL_MODULES)"
+#	@echo "BOARD_VENDOR_KERNEL_MODULES: $(BOARD_VENDOR_KERNEL_MODULES)"
 
 
 .PHONY: bootimage-quick
@@ -175,7 +179,6 @@ bootimage-quick: $(INTERMEDIATES_KERNEL)
 	out/host/linux-x86/bin/mkbootimg  --kernel $(INTERMEDIATES_KERNEL) \
 		--base 0x0 \
 		--kernel_offset 0x1080000 \
-		--ramdisk $(PRODUCT_OUT)/ramdisk.img \
 		$(BOARD_MKBOOTIMG_ARGS) \
 		--output $(PRODUCT_OUT)/boot.img
 	ls -l $(PRODUCT_OUT)/boot.img
@@ -194,10 +197,6 @@ recoveryimage-quick: $(INTERMEDIATES_KERNEL)
 		--output $(PRODUCT_OUT)/recovery.img
 	ls -l $(PRODUCT_OUT)/recovery.img
 	echo "Done building recovery.img"
-
-.PHONY: kernelconfig
-
-.PHONY: savekernelconfig
 
 endif
 

@@ -166,8 +166,8 @@ endif
 
 
 
-PRODUCT_PACKAGES += ca-certificates.crt \
-    libstagefright_wfd_sink
+#PRODUCT_PACKAGES += ca-certificates.crt \
+#    libstagefright_wfd_sink
 
 
 

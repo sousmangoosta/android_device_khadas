@@ -64,16 +64,16 @@ endif
 
 PRODUCT_COPY_FILES += \
     device/khadas/$(PRODUCT_DIR)/recovery/init.recovery.amlogic.rc:root/init.recovery.amlogic.rc \
-    device/khadas/$(PRODUCT_DIR)/recovery/recovery.kl:recovery/root/etc/recovery.kl \
-    device/khadas/$(PRODUCT_DIR)/files/mesondisplay.cfg:recovery/root/etc/mesondisplay.cfg \
     device/khadas/$(PRODUCT_DIR)/recovery/remotecfg:recovery/root/sbin/remotecfg \
+    device/khadas/common/recovery/busybox:recovery/root/sbin/busybox \
+    device/khadas/common/recovery/resize2fs:recovery/root/sbin/resize2fs \
+    device/khadas/$(PRODUCT_DIR)/recovery/sh:recovery/root/sbin/sh \
+    #device/khadas/$(PRODUCT_DIR)/recovery/recovery.kl:recovery/root/etc/recovery.kl \
+    device/khadas/$(PRODUCT_DIR)/files/mesondisplay.cfg:recovery/root/etc/mesondisplay.cfg \
     device/khadas/$(PRODUCT_DIR)/files/remote.cfg:recovery/root/etc/remote.cfg \
     device/khadas/$(PRODUCT_DIR)/files/remote.tab1:recovery/root/etc/remote.tab1 \
     device/khadas/$(PRODUCT_DIR)/files/remote.tab2:recovery/root/etc/remote.tab2 \
-    device/khadas/$(PRODUCT_DIR)/files/remote.tab3:recovery/root/etc/remote.tab3 \
-    device/khadas/common/recovery/busybox:recovery/root/sbin/busybox \
-    device/khadas/common/recovery/resize2fs:recovery/root/sbin/resize2fs \
-    device/khadas/$(PRODUCT_DIR)/recovery/sh:recovery/root/sbin/sh
+    device/khadas/$(PRODUCT_DIR)/files/remote.tab3:recovery/root/etc/remote.tab3
 
 $(shell python $(LOCAL_PATH)/auto_generator.py preinstall)
 -include device/khadas/kvim/preinstall/preinstall.mk
@@ -110,11 +110,7 @@ PRODUCT_PACKAGES += \
 # setup dalvik vm configs.
 $(call inherit-product, frameworks/native/build/tablet-7in-hdpi-1024-dalvik-heap.mk)
 
-
-#To remove healthd from the build
-PRODUCT_PACKAGES += android.hardware.health@2.0-service.override
-DEVICE_FRAMEWORK_MANIFEST_FILE += \
-	system/libhidl/vintfdata/manifest_healthd_exclude.xml
-
 #To keep healthd in the build
 PRODUCT_PACKAGES += android.hardware.health@2.0-service
+
+PRODUCT_USE_DYNAMIC_PARTITIONS := true

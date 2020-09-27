@@ -15,16 +15,16 @@ BOARD_VENDOR_KERNEL_MODULES += $(PRODUCT_OUT)/obj/lib_vendor/iv009_isp_sensor.ko
 KDIR := $(shell pwd)/$(PRODUCT_OUT)/obj/KERNEL_OBJ
 
 define arm_isp-modules
-	$(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/v4l2_dev \
+	PATH=/bin:$$PATH $(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/v4l2_dev \
 	ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules
 
-	$(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/subdev/iq \
+	PATH=/bin:$$PATH $(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/subdev/iq \
         ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules
 
-	$(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/subdev/lens \
+	PATH=/bin:$$PATH $(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/subdev/lens \
         ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules
 
-	$(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/subdev/sensor \
+	PATH=/bin:$$PATH $(MAKE) -C $(KDIR) M=$(ARM_ISP_MODULES)/subdev/sensor \
         ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) modules
 
 	find $(ARM_ISP_MODULES) -name *.ko | xargs -i cp {} ${MODS_OUT}

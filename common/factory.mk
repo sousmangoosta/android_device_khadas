@@ -15,7 +15,7 @@ ifeq ($(PRODUCT_BUILD_SECURE_BOOT_IMAGE_DIRECTLY),true)
 	BUILT_IMAGES := $(addsuffix .encrypt, $(BUILT_IMAGES))
 endif#ifeq ($(PRODUCT_BUILD_SECURE_BOOT_IMAGE_DIRECTLY),true)
 
-BUILT_IMAGES += system.img #userdata.img
+#BUILT_IMAGES += system.img #userdata.img
 
 ifneq ($(AB_OTA_UPDATER),true)
 #BUILT_IMAGES += cache.img
@@ -25,32 +25,39 @@ ifdef BOARD_PREBUILT_DTBOIMAGE
 BUILT_IMAGES += dtbo.img
 endif
 
-BUILT_IMAGES += vendor.img
+#BUILT_IMAGES += vendor.img
 ifeq ($(BOARD_USES_ODMIMAGE),true)
-BUILT_IMAGES += odm.img
+#BUILT_IMAGES += odm.img
 # Adds the image and the matching map file to <product>-target_files-<build number>.zip, to allow
 # generating OTA from target_files.zip (b/111128214).
-INSTALLED_RADIOIMAGE_TARGET += $(PRODUCT_OUT)/odm.img $(PRODUCT_OUT)/odm.map
+INSTALLED_RADIOIMAGE_TARGET += $(PRODUCT_OUT)/odm.img #$(PRODUCT_OUT)/odm.map
 # Adds to <product name>-img-<build number>.zip so can be flashed.  b/110831381
-BOARD_PACK_RADIOIMAGES += odm.img odm.map
+BOARD_PACK_RADIOIMAGES += odm.img #odm.map
 endif
 
 ifeq ($(BOARD_USES_PRODUCTIMAGE),true)
-BUILT_IMAGES += product.img
+#BUILT_IMAGES += product.img
 endif
 
 ifeq ($(BUILD_WITH_AVB),true)
-BUILT_IMAGES += vbmeta.img
+#BUILT_IMAGES += vbmeta.img
 endif
 
 ifeq ($(BOARD_USES_SYSTEM_OTHER_ODEX),true)
-BUILT_IMAGES += system_other.img
+#BUILT_IMAGES += system_other.img
 endif
+
+ifeq ($(PRODUCT_USE_DYNAMIC_PARTITIONS),true)
+BUILT_IMAGES += super.img
+endif
+
+$(PRODUCT_OUT)/super.img:
+	cp $(PRODUCT_OUT)/obj/PACKAGING/super.img_intermediates/super.img $(PRODUCT_OUT)/super.img
 
 ifeq ($(strip $(HAS_BUILD_NUMBER)),false)
   # BUILD_NUMBER has a timestamp in it, which means that
   # it will change every time.  Pick a stable value.
-  FILE_NAME := eng.$(USER)
+  FILE_NAME := eng.$(BUILD_USERNAME)
 else
   FILE_NAME := $(file <$(BUILD_NUMBER_FILE))
 endif
@@ -65,7 +72,7 @@ INTERNAL_ODMIMAGE_FILES := \
 
 odmimage_intermediates := \
     $(call intermediates-dir-for,PACKAGING,odm)
-BUILT_ODMIMAGE_TARGET := $(PRODUCT_OUT)/odm.img
+#BUILT_ODMIMAGE_TARGET := $(PRODUCT_OUT)/odm.img
 # We just build this directly to the install location.
 INSTALLED_ODMIMAGE_TARGET := $(BUILT_ODMIMAGE_TARGET)
 
@@ -76,7 +83,7 @@ $(INSTALLED_ODMIMAGE_TARGET) : $(INTERNAL_ODMIMAGE_FILES) $(PRODUCT_OUT)/system.
 	@mkdir -p $(odmimage_intermediates) && rm -rf $(odmimage_intermediates)/odm_image_info.txt
 	$(call generate-userimage-prop-dictionary, $(odmimage_intermediates)/odm_image_info.txt, skip_fsck=true)
 	PATH=$(HOST_OUT_EXECUTABLES):$$PATH \
-	 mkuserimg_mke2fs.sh -s $(PRODUCT_OUT)/odm $(INSTALLED_ODMIMAGE_TARGET) $(BOARD_ODMIMAGE_FILE_SYSTEM_TYPE) \
+	 mkuserimg_mke2fs -s $(PRODUCT_OUT)/odm $(INSTALLED_ODMIMAGE_TARGET) $(BOARD_ODMIMAGE_FILE_SYSTEM_TYPE) \
 	 odm $(BOARD_ODMIMAGE_PARTITION_SIZE) -j 0 -T 1230739200 -B $(PRODUCT_OUT)/odm.map -L odm -M 0 \
 	 $(PRODUCT_OUT)/obj/ETC/file_contexts.bin_intermediates/file_contexts.bin
 	#mke2fs -s -T -1 -S $(PRODUCT_OUT)/obj/ETC/file_contexts.bin_intermediates/file_contexts.bin -L odm -l $(BOARD_ODMIMAGE_PARTITION_SIZE) -a odm $(INSTALLED_ODMIMAGE_TARGET) $(PRODUCT_OUT)/odm $(PRODUCT_OUT)/system
@@ -85,11 +92,11 @@ $(INSTALLED_ODMIMAGE_TARGET) : $(INTERNAL_ODMIMAGE_FILES) $(PRODUCT_OUT)/system.
 	-cp $(PRODUCT_OUT)/odm.img $(AML_TARGET)/IMAGES/
 
 # We need a (implicit) rule for odm.map, in order to support the INSTALLED_RADIOIMAGE_TARGET above.
-$(INSTALLED_ODMIMAGE_TARGET): .KATI_IMPLICIT_OUTPUTS := $(PRODUCT_OUT)/odm.map
+#$(INSTALLED_ODMIMAGE_TARGET): .KATI_IMPLICIT_OUTPUTS := $(PRODUCT_OUT)/odm.map
 
-.PHONY: odm_image
-odm_image : $(INSTALLED_ODMIMAGE_TARGET)
-$(call dist-for-goals, odm_image, $(INSTALLED_ODMIMAGE_TARGET))
+#.PHONY: odm_image
+#odm_image : $(INSTALLED_ODMIMAGE_TARGET)
+#$(call dist-for-goals, odm_image, $(INSTALLED_ODMIMAGE_TARGET))
 
 endif
 
@@ -134,9 +141,9 @@ $(INSTALLED_BOARDDTB_TARGET) : $(KERNEL_DEVICETREE_SRC) $(DTCTOOL) $(DTIMGTOOL) 
 		sed -i 's/^#include \"partition_.*/#include \"$(TARGET_PARTITION_DTSI)\"/' $(KERNEL_ROOTDIR)/$(KERNEL_DEVICETREE_DIR)/$(strip $(aDts)).dts; \
 		sed -i 's/^#include \"firmware_.*/#include \"$(TARGET_FIRMWARE_DTSI)\"/' $(KERNEL_ROOTDIR)/$(KERNEL_DEVICETREE_DIR)/$(TARGET_PARTITION_DTSI); \
 		if [ -f "$(KERNEL_ROOTDIR)/$(KERNEL_DEVICETREE_DIR)/$(aDts).dtd" ]; then \
-			$(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) $(strip $(aDts)).dtd; \
+			PATH=/bin:$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) $(strip $(aDts)).dtd; \
 		fi;\
-		$(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) $(strip $(aDts)).dtb; \
+		PATH=/bin:$$PATH $(MAKE) -C $(KERNEL_ROOTDIR) O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(PREFIX_CROSS_COMPILE) $(strip $(aDts)).dtb; \
 	)
 	cp device/khadas/common/common_partition.xml $(PRODUCT_OUT)/emmc_burn.xml
 	./device/khadas/common/dtsi2xml.sh $(KERNEL_ROOTDIR)/$(KERNEL_DEVICETREE_DIR)/$(TARGET_PARTITION_DTSI)  $(PRODUCT_OUT)/emmc_burn.xml
@@ -461,7 +468,9 @@ else
 INSTALLED_AML_UPGRADE_PACKAGE_TARGET :=
 endif
 
-INSTALLED_AML_FASTBOOT_ZIP := $(PRODUCT_OUT)/$(TARGET_PRODUCT)-fastboot-flashall-$(BUILD_NUMBER).zip
+INSTALLED_AML_FASTBOOT_ZIP := $(PRODUCT_OUT)/$(TARGET_PRODUCT)-fastboot-flashall-$(shell echo $(BUILD_NUMBER_FROM_FILE)).zip
+INSTALLED_AML_IMAGE_ZIP := $(PRODUCT_OUT)/$(TARGET_PRODUCT)-fastboot-image-$(shell echo $(BUILD_NUMBER_FROM_FILE)).zip
+NEW_BUILD_NUMBER := $(shell echo $(BUILD_NUMBER_FROM_FILE))
 $(warning will keep $(INSTALLED_AML_FASTBOOT_ZIP))
 $(call dist-for-goals, droidcore, $(INSTALLED_AML_FASTBOOT_ZIP))
 
@@ -486,7 +495,7 @@ FASTBOOT_IMAGES += dtbo.img
 endif
 
 ifeq ($(BUILD_WITH_AVB),true)
-	FASTBOOT_IMAGES += vbmeta.img
+#	FASTBOOT_IMAGES += vbmeta.img
 endif
 
 ifeq ($(BOARD_USES_SYSTEM_OTHER_ODEX),true)
@@ -527,7 +536,7 @@ endif
 ifeq ($(TARGET_PRODUCT),atom)
 	echo "board=atom" > $(PRODUCT_OUT)/fastboot/android-info.txt
 endif
-	cd $(PRODUCT_OUT)/fastboot; zip -r ../$(TARGET_PRODUCT)-fastboot-image-$(BUILD_NUMBER).zip $(FASTBOOT_IMAGES)
+	cd $(PRODUCT_OUT)/fastboot; zip -r ../../../../../$(INSTALLED_AML_IMAGE_ZIP) $(FASTBOOT_IMAGES)
 	rm -rf $(PRODUCT_OUT)/fastboot_auto
 	mkdir -p $(PRODUCT_OUT)/fastboot_auto
 	cd $(PRODUCT_OUT); cp $(FASTBOOT_IMAGES) fastboot_auto/
@@ -547,17 +556,17 @@ else
 	cp device/khadas/common/flash-all.sh $(PRODUCT_OUT)/fastboot_auto/
 	cp device/khadas/common/flash-all.bat $(PRODUCT_OUT)/fastboot_auto/
 endif
-	sed -i 's/fastboot update fastboot.zip/fastboot update $(TARGET_PRODUCT)-fastboot-image-$(BUILD_NUMBER).zip/' $(PRODUCT_OUT)/fastboot_auto/flash-all.sh
-	sed -i 's/fastboot update fastboot.zip/fastboot update $(TARGET_PRODUCT)-fastboot-image-$(BUILD_NUMBER).zip/' $(PRODUCT_OUT)/fastboot_auto/flash-all.bat
-	cd $(PRODUCT_OUT)/fastboot_auto; zip -r ../$(TARGET_PRODUCT)-fastboot-flashall-$(BUILD_NUMBER).zip *
-	zipnote $@ | sed 's/@ \([a-z]*.img\).encrypt/&\n@=\1\n/' | zipnote -w $@
+	sed -i 's/fastboot update fastboot.zip/fastboot update $(TARGET_PRODUCT)-fastboot-image-$(NEW_BUILD_NUMBER).zip/' $(PRODUCT_OUT)/fastboot_auto/flash-all.sh
+	sed -i 's/fastboot update fastboot.zip/fastboot update $(TARGET_PRODUCT)-fastboot-image-$(NEW_BUILD_NUMBER).zip/' $(PRODUCT_OUT)/fastboot_auto/flash-all.bat
+	cd $(PRODUCT_OUT)/fastboot_auto; zip -r ../../../../../$@ *
+	PATH=/bin:$$PATH zipnote $@ | sed 's/@ \([a-z]*.img\).encrypt/&\n@=\1\n/' | PATH=/bin:$$PATH zipnote -w $@
 
 
 name := $(TARGET_PRODUCT)
 ifeq ($(TARGET_BUILD_TYPE),debug)
   name := $(name)_debug
 endif
-name := $(name)-ota-amlogic-$(BUILD_NUMBER)
+name := $(name)-ota-amlogic-$(shell echo $(BUILD_NUMBER_FROM_FILE))
 
 AMLOGIC_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
 
@@ -651,7 +660,10 @@ endif
 ota_name := $(ota_name)-ota-$(FILE_NAME_TAG)
 INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(ota_name).zip
 
+.PHONY: droidcore
 droidcore: $(INSTALLED_AML_UPGRADE_PACKAGE_TARGET) $(INSTALLED_MANIFEST_XML) $(INSTALLED_AML_FASTBOOT_ZIP)
+.PHONY: otapackage
 otapackage: $(INSTALLED_AML_UPGRADE_PACKAGE_TARGET) $(INSTALLED_MANIFEST_XML) $(INSTALLED_AML_FASTBOOT_ZIP)
 ota_amlogic: $(INSTALLED_AML_UPGRADE_PACKAGE_TARGET) $(INSTALLED_MANIFEST_XML) $(INSTALLED_AML_FASTBOOT_ZIP) otapackage
+.PHONY: cipackage
 cipackage: $(INTERNAL_OTA_PACKAGE_TARGET) $(INSTALLED_MANIFEST_XML) $(INSTALLED_AML_FASTBOOT_ZIP)

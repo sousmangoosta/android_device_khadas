@@ -72,30 +72,24 @@ PRODUCT_PACKAGES += \
 
 ifneq ($(TARGET_BUILD_GOOGLE_ATV), true)
 # NativeImagePlayer
-PRODUCT_PACKAGES += \
+#PRODUCT_PACKAGES += \
     NativeImagePlayer
 
 #Launcher3
-PRODUCT_PACKAGES += \
+#PRODUCT_PACKAGES += \
     Launcher3
 endif
 
-PRODUCT_PACKAGES += \
-    FactoryTest
+#PRODUCT_PACKAGES += \
+#    FactoryTest
 
 PRODUCT_PACKAGES += \
     setbootenv \
     getbootenv
 
-#screencontrol
-PRODUCT_PACKAGES += \
-    screencontrol \
-    libscreencontrolservice \
-    libscreencontrol_jni \
-
 #droid vold
-PRODUCT_PACKAGES += \
-    droidvold
+#PRODUCT_PACKAGES += \
+#    droidvold
 
 # Camera Hal
 PRODUCT_PACKAGES += \
@@ -104,8 +98,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PROPERTY_OVERRIDES += ro.hdmi.device_type=4
 
 
-PRODUCT_PACKAGES += \
-    OTAUpgrade
+#PRODUCT_PACKAGES += \
+#    OTAUpgrade
 
 ifeq ($(BUILD_WITH_MIRACAST), true)
 PRODUCT_PACKAGES += \
@@ -193,12 +187,12 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/default_wallpaper.png:$(TARGET_COPY_OUT_VENDOR)/etc/default_wallpaper.png
 
 # Include BUILD_NUMBER if defined
-VERSION_ID=$(shell find device/*/$(TARGET_PRODUCT) -name version_id.mk)
-ifeq ($(VERSION_ID),)
-export BUILD_NUMBER := $(shell date +%Y%m%d)
-else
-$(call inherit-product, $(VERSION_ID))
-endif
+#VERSION_ID=$(shell find device/*/$(TARGET_PRODUCT) -name version_id.mk)
+#ifeq ($(VERSION_ID),)
+#export BUILD_NUMBER := $(shell date +%Y%m%d)
+#else
+#$(call inherit-product, $(VERSION_ID))
+#endif
 
 DISPLAY_BUILD_NUMBER := true
 

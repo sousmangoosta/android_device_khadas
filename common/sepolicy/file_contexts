@@ -262,7 +262,7 @@
 #/vendor/bin/dv_config        u:object_r:dv_config_exec:s0
 
 
-/system/bin/imageserver      u:object_r:imageserver_exec:s0
+#/system/bin/imageserver      u:object_r:imageserver_exec:s0
 #/system/bin/mke2fs       --   u:object_r:fsck_exec:s0
 #/system/bin/e2fsdroid    --	  u:object_r:fsck_exec:s0
 #/vendor/bin/pppoe_wrapper    u:object_r:pppoe_wrapper_exec:s0
@@ -274,7 +274,7 @@
 /vendor/bin/systemcontrol     u:object_r:system_control_exec:s0
 /vendor/bin/subtitleserver    u:object_r:subtitleserver_exec:s0
 /vendor/bin/hdmicecd          u:object_r:hdmicecd_exec:s0
-/vendor/bin/droidvold         u:object_r:droidvold_exec:s0
+#/vendor/bin/droidvold         u:object_r:droidvold_exec:s0
 /vendor/bin/rc_server         u:object_r:rc_server_exec:s0
 /vendor/bin/rsdb              u:object_r:rsdb_exec:s0
 /vendor/bin/tee-supplicant    u:object_r:tee_exec:s0
@@ -319,7 +319,6 @@
 /vendor/lib(64)?/libvendorfont\.so         u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/libtvbinder\.so           u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/libtv_jni\.so             u:object_r:vendor_app_file:s0
-/vendor/lib(64)?/libscreencontrol_jni\.so  u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/libsystemcontrol_jni\.so  u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/libamadec_omx_api\.so     u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/liboptimization\.so       u:object_r:vendor_app_file:s0
@@ -331,8 +330,7 @@
 /vendor/lib(64)?/libpppoe\.so          u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/vendor\.amlogic\.hardware\.remotecontrol@1\.0\.so   u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/vendor\.amlogic\.hardware\.hdmicec@1\.0\.so    u:object_r:vendor_app_file:s0
-/vendor/lib(64)?/vendor\.amlogic\.hardware\.droidvold@1\.0\.so  u:object_r:vendor_app_file:s0
-/vendor/lib(64)?/vendor\.amlogic\.hardware\.screencontrol@1\.0\.so  u:object_r:vendor_app_file:s0
+#/vendor/lib(64)?/vendor\.amlogic\.hardware\.droidvold@1\.0\.so  u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/vendor\.amlogic\.hardware\.systemcontrol@1\.1\.so  u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/vendor\.amlogic\.hardware\.systemcontrol@1\.0\.so  u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/vendor\.amlogic\.hardware\.tvserver@1\.0\.so  u:object_r:vendor_app_file:s0
@@ -342,7 +340,6 @@
 /vendor/lib(64)?/libsubjni\.so        u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/libtvsubtitle_tv\.so        u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/libjnifont_tv\.so        u:object_r:vendor_app_file:s0
-/vendor/lib(64)?/libscreencontrolclient\.so        u:object_r:vendor_app_file:s0
 /vendor/lib(64)?/libsystemcontrolclient\.so        u:object_r:vendor_app_file:s0
 
 /dev/hidraw[0-9]*	u:object_r:hidraw_audio_device:s0

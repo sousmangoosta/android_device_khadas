@@ -14,7 +14,6 @@ PRODUCT_PACKAGES += \
     libtv_linker \
     libtvbinder \
     tvtest \
-    libscreencontrol_jni \
     tvserver \
     libtvplay \
     libvendorfont \
@@ -58,9 +57,9 @@ endif
 
 endif
 
-PRODUCT_PACKAGES += \
-    busybox \
-    utility_busybox
+#PRODUCT_PACKAGES += \
+#    busybox \
+#    utility_busybox
 
 # DLNA
 ifneq ($(TARGET_BUILD_GOOGLE_ATV), true)
@@ -82,14 +81,9 @@ PRODUCT_PACKAGES += \
     MboxLauncher
 endif
 
-#screencontrol
-PRODUCT_PACKAGES += \
-    screencontrol \
-    libscreencontrolservice
-
 #droid vold
-PRODUCT_PACKAGES += \
-    droidvold
+#PRODUCT_PACKAGES += \
+#    droidvold
 
 # Camera Hal
 PRODUCT_PACKAGES += \
@@ -98,8 +92,8 @@ PRODUCT_PACKAGES += \
 
 #PRODUCT_PROPERTY_OVERRIDES += ro.hdmi.device_type=0
 
-PRODUCT_PACKAGES += \
-    OTAUpgrade
+#PRODUCT_PACKAGES += \
+#    OTAUpgrade
 
 ifeq ($(BUILD_WITH_MIRACAST), true)
 PRODUCT_PACKAGES += \

@@ -14,4 +14,13 @@
 # limitations under the License.
 #
 
-PRODUCT_MAKEFILES := $(LOCAL_DIR)/kvim.mk
+PRODUCT_MAKEFILES := \
+    $(LOCAL_DIR)/kvim.mk \
+    $(LOCAL_DIR)/kvim_atv.mk
+
+COMMON_LUNCH_CHOICES := \
+    kvim-eng \
+    kvim-user \
+    kvim-userdebug \
+    kvim_atv-user \
+    kvim_atv-userdebug

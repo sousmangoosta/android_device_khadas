@@ -43,7 +43,9 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
 	libfdt \
-	libufdt \
+	libufdt
+
+PRODUCT_HOST_PACKAGES += \
 	dtc \
 	mkdtimg
 
@@ -70,7 +72,7 @@ PRODUCT_PACKAGES += \
     LiveWallpapersPicker
 endif
 
-PRODUCT_PACKAGES += \
+#PRODUCT_PACKAGES += \
     Gallery2 \
     OneTimeInitializer \
     SystemUI \
@@ -130,8 +132,8 @@ PRODUCT_PACKAGES += \
     VpnDialogs
 
 SKIP_BOOT_JARS_CHECK = true
-PRODUCT_BOOT_JARS += \
-    exoplayer
+#PRODUCT_BOOT_JARS += \
+#    exoplayer
 
 $(call inherit-product-if-exists, frameworks/base/data/fonts/fonts.mk)
 $(call inherit-product-if-exists, external/google-fonts/dancing-script/fonts.mk)
@@ -142,9 +144,10 @@ $(call inherit-product-if-exists, external/noto-fonts/fonts.mk)
 $(call inherit-product-if-exists, external/naver-fonts/fonts.mk)
 $(call inherit-product-if-exists, external/roboto-fonts/fonts.mk)
 $(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
-$(call inherit-product-if-exists, frameworks/webview/chromium/chromium.mk)
+#$(call inherit-product-if-exists, frameworks/webview/chromium/chromium.mk)
 ifneq ($(TARGET_BUILD_GOOGLE_ATV), true)
-  $(call inherit-product, build/target/product/core_base.mk)
+  #$(call inherit-product, build/target/product/core_base.mk)
+  $(call inherit-product, device/google/atv/products/atv_base.mk)
 else
   $(call inherit-product, device/google/atv/products/atv_base.mk)
 endif
@@ -167,7 +170,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.media.camera_usb.faceback=false
 #add camera app
-PRODUCT_PACKAGES += Camera2
+#PRODUCT_PACKAGES += Camera2
 
 ifneq ($(TARGET_BUILD_GOOGLE_ATV), true)
 PRODUCT_PACKAGES += \
@@ -188,22 +191,22 @@ PRODUCT_PACKAGES += \
     libtunertvinput_jni
 endif
 
-PRODUCT_PACKAGES += \
-    droidlogic \
-    droidlogic-res \
-    droidlogic.software.core.xml \
-    systemcontrol \
-    systemcontrol_static \
-    subtitleserver \
-    libsystemcontrolservice \
-    libsystemcontrol_jni  \
-    vendor.amlogic.hardware.systemcontrol@1.0_vendor
+#PRODUCT_PACKAGES += \
+#    droidlogic \
+#    droidlogic-res \
+#    droidlogic.software.core.xml \
+#    systemcontrol \
+#    systemcontrol_static \
+#    subtitleserver \
+#    libsystemcontrolservice \
+#    libsystemcontrol_jni  \
+#    vendor.amlogic.hardware.systemcontrol@1.0_vendor
 
 #add tv library
-PRODUCT_PACKAGES += \
-    droidlogic-tv \
-    droidlogic.tv.software.core.xml \
-    libtv_jni
+#PRODUCT_PACKAGES += \
+#    droidlogic-tv \
+#    droidlogic.tv.software.core.xml \
+#    libtv_jni
 
 PRODUCT_PACKAGES += \
     VideoPlayer \
@@ -378,8 +381,8 @@ PRODUCT_PACKAGES += \
      android.hardware.usb@1.0-service
 
 #workround because android.hardware.wifi@1.0-service has not permission to insmod ko
-PRODUCT_COPY_FILES += \
-        hardware/amlogic/wifi/multi_wifi/android.hardware.wifi@1.0-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.wifi@1.0-service.rc
+#PRODUCT_COPY_FILES += \
+#        hardware/amlogic/wifi/multi_wifi/android.hardware.wifi@1.0-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.wifi@1.0-service.rc
 
 PRODUCT_COPY_FILES += \
     device/khadas/common/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml
@@ -474,14 +477,14 @@ PRODUCT_PACKAGES += \
     android.hardware.thermal@1.0-impl \
     android.hardware.thermal@1.0-service
 
-PRODUCT_PACKAGES += \
-    android.hardware.cas@1.0-service
+#PRODUCT_PACKAGES += \
+#    android.hardware.cas@1.0-service
 
 # DroidVold
-PRODUCT_PACKAGES += \
-    vendor.amlogic.hardware.droidvold@1.0 \
-    vendor.amlogic.hardware.droidvold@1.0_vendor \
-    vendor.amlogic.hardware.droidvold-V1.0-java
+#PRODUCT_PACKAGES += \
+#    vendor.amlogic.hardware.droidvold@1.0 \
+#    vendor.amlogic.hardware.droidvold@1.0_vendor \
+#    vendor.amlogic.hardware.droidvold-V1.0-java
 
 # Miracast HDCP2 HAL
 PRODUCT_PACKAGES += \
